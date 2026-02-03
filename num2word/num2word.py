@@ -47,8 +47,8 @@ if len(list_numbers) != 1:
 
 # create groups of 3
 num_str = str(list_numbers[0])
-num_str = str('10,010,009')
-result_1 = {}
+num_str = str('10110009') # 10,110,009
+dict_pockets = {}
 
 # start from the right, group in threes
 position = 0
@@ -56,24 +56,24 @@ while num_str:
 
     # take last 3 characters (or remaining if less than 3)
     group = num_str[-3:] if len(num_str) >= 3 else num_str
-    result_1[position] = group
+    dict_pockets[position] = group
     
     # remove the last 3 characters
     num_str = num_str[:-3]
     position += 1
 
-print(result_1)
+print(dict_pockets)
 
 # %%
 
 # hundred to word
-ll = list(result_1.keys())
+ll = list(dict_pockets.keys())
 ll.sort()
 ll.reverse()
 
 for i in ll:
 
-    print(i)
+    print('---> at seperator', dict_numbers[i], 'pocket', dict_numbers[i])
 
 # %%
 
