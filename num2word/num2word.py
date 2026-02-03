@@ -1,17 +1,8 @@
 # %%
 
-import pandas as pd
-
 import re, sys, argparse
 
 # %%
-
-# the function
-def num2word(s: str = 'Example 1234'):
-
-    return 'Hello World'
-
-s = 'The pump is 536 deep undergroun'
 
 # numbers meta data
 dict_numbers = {1: 'one', 2: 'two', 3: 'three', 4: 'four', 5: 'five', 6: 'six', 7: 'seven', 8: 'eight', 9: 'nine', 10: 'ten', 11: 'eleven', 12: 'twelve', 13: 'thirteen', 14: 'fourteen', 15: 'fifteen', 16: 'sixteen', 17: 'seventeen', 18: 'eighteen', 19: 'nineteen', 20: 'twenty', 21: 'twenty-one', 22: 'twenty-two', 23: 'twenty-three', 24: 'twenty-four', 25: 'twenty-five', 26: 'twenty-six', 27: 'twenty-seven', 28: 'twenty-eight', 29: 'twenty-nine', 30: 'thirty', 31: 'thirty-one', 32: 'thirty-two', 33: 'thirty-three', 34: 'thirty-four', 35: 'thirty-five', 36: 'thirty-six', 37: 'thirty-seven', 38: 'thirty-eight', 39: 'thirty-nine', 40: 'forty', 41: 'forty-one', 42: 'forty-two', 43: 'forty-three', 44: 'forty-four', 45: 'forty-five', 46: 'forty-six', 47: 'forty-seven', 48: 'forty-eight', 49: 'forty-nine', 50: 'fifty',
@@ -20,86 +11,92 @@ dict_numbers = {1: 'one', 2: 'two', 3: 'three', 4: 'four', 5: 'five', 6: 'six', 
 # grouping meta data
 dict_seperator = {0: '', 1: 'thousand', 2: 'million', 3: 'billion', 4: 'trillion'}
 
-# strip, fix up later
-list_numbers = re.findall(pattern=r'(?<![#$\w])\d+(?![#$\w])', string=s)
-list_numbers
+# the function
+def num2word(s: str = 'Example 1234'):
 
-# only one number 
-if len(list_numbers) != 1:
+    # extract number 
+    list_numbers = re.findall(pattern=r'(?<![#$\w])\d+(?![#$\w])', string=s)
+    list_numbers
 
-    print('number invalid')
-    sys.exit(0)
+    # only one number 
+    if len(list_numbers) != 1:
 
-# very first check, is this number 0, 00, or 000...
+        return 'number invalid'
 
-# create groups of 3
-num_str = str(list_numbers[0])
-dict_pockets = {}
+    # first check, is this number 0, 00, or 000...
+    if int(list_numbers[0]) == 0:
 
-# start from the right, group in threes
-position = 0
-while num_str:
+        return 'zero'
 
-    # take last 3 characters (or remaining if less than 3)
-    group = num_str[-3:] if len(num_str) >= 3 else num_str
-    dict_pockets[position] = group
-    
-    # remove the last 3 characters
-    num_str = num_str[:-3]
-    position += 1
+    # create groups of 3
+    num_str = str(list_numbers[0])
+    dict_pockets = {}
 
-ll = list(dict_pockets.keys())
-ll.sort()
-ll.reverse()
+    # start from the right, group in threes
+    position = 0
+    while num_str:
 
-result = ''
-list_result_pockets = []
+        # take last 3 characters (or remaining if less than 3)
+        group = num_str[-3:] if len(num_str) >= 3 else num_str
+        dict_pockets[position] = group
+        
+        # remove the last 3 characters
+        num_str = num_str[:-3]
+        position += 1
 
-# construct word representation from each pocket
-for i in ll:
+    ll = list(dict_pockets.keys())
+    ll.sort()
+    ll.reverse()
 
-    result_pocket = ''
+    result = ''
+    list_result_pockets = []
 
-    print('---> at seperator', dict_seperator[i], 'pocket', dict_pockets[i])
+    # construct word representation from each pocket
+    for i in ll:
 
-    # convert string pocket to digit (elimates leading zeros)
-    int_digit = int(dict_pockets[i])
-    str_digit = str(int_digit)
+        result_pocket = ''
 
-    if int_digit == 0:
-        print('---> skip this pocket')
-        continue
+        # print('---> at seperator', dict_seperator[i], 'pocket', dict_pockets[i])
 
-    if len((str_digit)) == 3:
+        # convert string pocket to digit (elimates leading zeros)
+        int_digit = int(dict_pockets[i])
+        str_digit = str(int_digit)
 
-        sub_pocket = int(str_digit[1:3])
+        if int_digit == 0:
 
-        result_pocket = dict_numbers[int(str_digit[0])] + ' hundred'
+            continue
 
-        if sub_pocket == 0:
+        if len((str_digit)) == 3:
 
-            result_pocket = result_pocket + ' ' + dict_seperator[i]
+            sub_pocket = int(str_digit[1:3])
+
+            result_pocket = dict_numbers[int(str_digit[0])] + ' hundred'
+
+            if sub_pocket == 0:
+
+                result_pocket = result_pocket + ' ' + dict_seperator[i]
+
+            else:
+
+                result_pocket = result_pocket + ' and ' + dict_numbers[sub_pocket] + ' ' + dict_seperator[i]
 
         else:
 
-            result_pocket = result_pocket + ' and ' + dict_numbers[sub_pocket] + ' ' + dict_seperator[i]
+            result_pocket = dict_numbers[int_digit] + ' ' + dict_seperator[i]
+
+        list_result_pockets.append(result_pocket.strip())
+
+    if 'and' in list_result_pockets[-1].split(' ') or len(list_result_pockets) == 1:
+
+        result = ', '.join(list_result_pockets)
+
+        return result
 
     else:
 
-        result_pocket = dict_numbers[int_digit] + ' ' + dict_seperator[i]
+        result = ', '.join(list_result_pockets[:-1]) + ' and ' + list_result_pockets[-1]
 
-    list_result_pockets.append(result_pocket)
-    print(result_pocket)
-
-if 'and' in list_result_pockets[-1].split(' ') or len(list_result_pockets) == 1:
-
-    result = ', '.join(list_result_pockets)
-
-else:
-
-    result = ', '.join(list_result_pockets[:-1]) + ' and ' + list_result_pockets[-1]
-
-print('---> final result:', result)
+        return result
 
 # %%
 
@@ -126,10 +123,8 @@ def main():
 
     if args.file:
         
-        # read from file
-        print(f"---> reading from file: {args.file}")
-        
-        with open('file.txt', 'r') as f:
+        # read from file    
+        with open(args.file, 'r') as f:
             sentence = f.read()
 
         num2word(sentence)
@@ -137,8 +132,6 @@ def main():
     elif args.sentence:
 
         # else use command line input
-        print(f"---> sentence: {args.sentence}")
-
         num2word(args.sentence)
 
     else:
