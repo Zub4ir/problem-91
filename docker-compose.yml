@@ -1,0 +1,7 @@
+services:
+
+  num2word:
+    container_name: num2word
+    build:
+      context: ./num2word
+      dockerfile: Dockerfile
