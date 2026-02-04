@@ -17,4 +17,18 @@ def test_baseline():
 
 def test_some_edge_cases():
 
-    assert 2 == 2
+    assert num2word('0') == 'zero'
+
+    assert num2word('00000') == 'zero'
+
+    assert num2word('1') == 'one'
+
+    assert num2word('001') == 'one'
+
+    assert num2word('001') == 'one'
+
+    assert num2word('00100') == 'one hundred'
+
+    assert num2word('100') == 'one hundred'
+
+    assert num2word('100100') == 'one hundred thousand and one hundred'

@@ -44,15 +44,15 @@ def num2word(s: str = 'Example 1234'):
         num_str = num_str[:-3]
         position += 1
 
-    ll = list(dict_pockets.keys())
-    ll.sort()
-    ll.reverse()
+    levels = list(dict_pockets.keys())
+    levels.sort()
+    levels.reverse()
 
     result = ''
     list_result_pockets = []
 
     # construct word representation from each pocket
-    for i in ll:
+    for i in levels:
 
         result_pocket = ''
 
@@ -62,16 +62,20 @@ def num2word(s: str = 'Example 1234'):
         int_digit = int(dict_pockets[i])
         str_digit = str(int_digit)
 
+        # after simplification, if 0 don't do word representation
         if int_digit == 0:
 
             continue
 
+        # do 3 digit via two streams
         if len((str_digit)) == 3:
 
             sub_pocket = int(str_digit[1:3])
 
+            # always hundred unit if 3 digits
             result_pocket = dict_numbers[int(str_digit[0])] + ' hundred'
 
+            # add units
             if sub_pocket == 0:
 
                 result_pocket = result_pocket + ' ' + dict_seperator[i]
@@ -80,12 +84,14 @@ def num2word(s: str = 'Example 1234'):
 
                 result_pocket = result_pocket + ' and ' + dict_numbers[sub_pocket] + ' ' + dict_seperator[i]
 
+        # 2 digit sraight from lookup table 
         else:
 
             result_pocket = dict_numbers[int_digit] + ' ' + dict_seperator[i]
 
         list_result_pockets.append(result_pocket.strip())
 
+    # combine pockets
     if 'and' in list_result_pockets[-1].split(' ') or len(list_result_pockets) == 1:
 
         result = ', '.join(list_result_pockets)
@@ -127,12 +133,12 @@ def main():
         with open(args.file, 'r') as f:
             sentence = f.read()
 
-        num2word(sentence)
+        print(num2word(sentence))
             
     elif args.sentence:
 
         # else use command line input
-        num2word(args.sentence)
+        print(num2word(args.sentence))
 
     else:
 
