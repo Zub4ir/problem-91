@@ -45,7 +45,7 @@ The results of the testing can be viewed here `https://github.com/Zub4ir/problem
 
 The tests run a Docker Container to standardise the testing environment.
 
-## Idea Project Setup
+## Some Project Improvements
 
 1. The repo has dev, uat and prod environments.
 2. This function forms part of a Module.
